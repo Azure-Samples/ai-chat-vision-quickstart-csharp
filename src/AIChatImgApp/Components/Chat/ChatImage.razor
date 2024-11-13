@@ -1,0 +1,29 @@
+﻿@using AIChatImgApp.Model
+
+<div class="image">
+    @if (IsAssistant)
+    {
+        <img src="./bot_head.png" alt="AI Assistant"/>
+    }
+    else
+    {
+        @if (imageUri?.Length > 0)
+        {
+            <img src="@imageUri" alt="Uploaded image"/>
+        }
+        else
+        {
+            <img src="./user.png" alt="user"/>
+        }
+    }
+</div>
+
+@code {
+    public string? imageUri => State == null ? null : $"data:{State.MimeType};base64,{Convert.ToBase64String(State.ImageBytes ?? [])}";
+    
+    [Parameter]
+    public ImageRequest? State { get; set; }
+
+    [Parameter]
+    public bool IsAssistant { get; set; }
+}

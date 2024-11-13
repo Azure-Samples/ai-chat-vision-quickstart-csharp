@@ -1,0 +1,136 @@
+﻿@using AIChatImgApp.Services
+@using AIChatImgApp.Model   
+
+<h3>Attach an Image</h3>
+
+<div class="image-uploader">    
+
+    @if (busy)
+    {
+        <div class="alert alert-info">Uploading...</div>
+    }
+    else 
+    {
+        @if (imageError != null)
+        {
+            <div class="alert alert-danger">@imageError</div>
+        }    
+    
+        @if (filename != null)
+        {
+            <img src="@imageUri" class="thumb" />
+            <p>(@filename)</p>
+            <p>@_context?.Message</p>
+            <button class="btn btn-success" @onclick="Attach">Send with image</button>
+            <button class="btn btn-danger" @onclick="Reset">Remove image</button> 
+        }
+        else
+        {
+            <p>(Optional) upload an image, @MAX_IMAGE_SIZE max bytes</p>
+            <InputFile id="fileUpload" OnChange="@ImageUploadHandler" class="thumb" />
+            <button class="btn btn-danger" @onclick="@Cancel">Cancel</button>
+        } 
+    }
+</div>
+
+@code {
+    private bool busy;
+    const long MAX_IMAGE_SIZE = 1024 * 1024;
+    private ImageRequest? image = null;
+    public string? imageUri = null;
+    public string? imageError = null;
+    public string? filename = null;
+
+    private ImageContext? _context;
+
+    [Parameter]
+    public ImageContext? Context 
+    {
+        get => _context;
+        set
+        {
+            if (_context != value )
+            {
+                _context = value;
+                BindingValueChanged.InvokeAsync(value);
+            }
+        }
+    }
+
+    [Parameter]
+    public EventCallback<ImageContext> BindingValueChanged { get; set; }
+
+    // User requests a new image
+    public void Reset()
+    {
+        imageUri = null;
+        imageError = null;
+        filename = null;        
+    }
+
+    // User confirms this image will work
+    public void Attach()
+    {
+        Context = new ImageContext()
+        {
+            ImageContent = image,
+            Confirmed = true
+        };
+    }
+
+    // user cancels request to attach image
+    public void Cancel()
+    {
+        Reset();
+
+        Context = new ImageContext()
+        {
+            CancelRequested = true
+        };
+    }
+
+    // handle uploaded files
+    public async void ImageUploadHandler(InputFileChangeEventArgs e)
+    {
+        busy = true;
+       
+        try
+        {
+            if (e.File == null)
+            {
+                imageError = "No file selected";
+                return;
+            }
+
+            imageError = null;
+            filename = Path.GetFileName(e.File.Name);
+
+            var temp = Path.Combine(Path.GetTempPath(), Path.GetTempFileName());
+
+            // very important to capture this as fast as possible without loading entirely into memory
+            using (var fs = new FileStream(temp, FileMode.Create, FileAccess.Write))
+            {
+                await e.File.OpenReadStream(maxAllowedSize: MAX_IMAGE_SIZE).CopyToAsync(fs);
+            }        
+            
+            // this will wipe the file upload if it hasn't been captured yet
+            StateHasChanged();
+
+            // build the image content
+            var bytes = File.ReadAllBytes(temp);
+            var mimeType = e.File.ContentType;
+            var base64 = Convert.ToBase64String(bytes);
+            image = new ImageRequest((string)filename, bytes, mimeType);
+            imageUri = $"data:{e.File.ContentType};base64,{base64}";
+            
+            imageError = null;            
+        }
+        catch (Exception ex)
+        {
+            imageError = ex.Message;
+        }
+        
+        busy = false;
+        StateHasChanged();
+    }
+}

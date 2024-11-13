@@ -1,0 +1,43 @@
+.chat {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - var(--header-height));
+}
+
+.chat .messages-scroller {
+    /* Make the scrollbar default to being at the end, instead of the start */
+    display: flex;
+    height: 100%;
+    flex-direction: column-reverse;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.chat .messages {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 1.5rem 0 0.75rem;
+    gap: 1rem;
+    align-items: flex-start;
+    margin-bottom: auto;
+}
+
+.chat .write-message {
+    height: 20vh;
+    min-height: 3rem;
+    flex-shrink: 0;
+    margin: 0.5rem 1rem 1.5rem 1rem;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.write-message textarea {
+    width: 100%;
+    height: 80%;
+    padding: 0.2em;
+    --control-corner-radius: 20;
+    --focus-stroke-width: 0;
+}

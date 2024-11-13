@@ -1,0 +1,141 @@
+.message {
+    overflow-y: hidden;
+    border: solid 2px lightgray;
+    border-radius: 2rem;
+    padding: 1rem;
+    background: lightblue;
+}
+
+.message.streaming {
+    animation: message-pulse 5s ease-in-out reverse infinite;
+    border: solid 2px red;
+}
+
+@keyframes message-pulse {
+    0% {
+        border: solid 2px white;
+    }
+
+    15% {
+        border: solid 2px red;
+    }
+
+    30% {
+        border: solid 2px orange;
+    }
+
+    45% {
+        border: solid 2px yellow;
+    }
+
+    60% {
+        border: solid 2px green;
+    }
+
+    75% {
+        border: solid 2px blue;
+    }
+
+    90% {
+        border: solid 2px purple;
+    }
+
+    100% {
+        border: solid 2px black;
+    }
+}
+
+
+.message ::deep .initials {
+    background-color: grey;
+}
+
+.message.assistant ::deep .initials {
+    background-color: #d800b1;
+}
+
+.message.assistant:not(.visible) {
+    display: none;
+}
+
+.message.assistant {
+    background: lightgray;
+    border-radius: 2rem;
+    padding: 1rem;
+}
+
+.sender {
+    background: white;
+    border: solid 3px lightblue;
+    border-radius: 1rem;
+}
+
+.sender-icon {
+    vertical-align: top;
+    align-self: center;
+    justify-self: center;
+}
+
+    .sender-icon ::deep img {
+        border-radius: 5px;
+        width: 128px !important;
+        max-height: 128px;
+        object-fit: cover;
+    }
+
+.sender-name {
+    font-size: 1rem;
+    font-weight: 600;
+    align-self: center;
+    width: 100%;
+    padding: 0.2rem;
+    text-align: center;
+}
+
+.message-content {
+}
+
+.message-text {
+    white-space: pre-line;
+    word-break: break-word;
+}
+
+.search-info {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.search-info:before {
+    content: 'Searching: ';
+}
+
+.reference-link {
+    display: flex;
+    text-decoration: none;
+    background-color: rgba(128, 128, 128, 0.3);
+    padding: 0.5rem 0.9rem;
+    border-radius: 0.5rem;
+    margin-top: 1rem;
+}
+
+.reference-link .ref-text {
+    display: -webkit-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.reference-link svg {
+    color: var(--neutral-foreground-rest);
+    width: var(--type-ramp-base-line-height);
+    height: var(--type-ramp-base-line-height);
+    flex-grow: 0;
+    flex-shrink: 0;
+    margin-right: 0.4rem;
+}
+
+::deep .use-as-reply {
+    margin-top: 0.8rem;
+    text-align: center;
+}

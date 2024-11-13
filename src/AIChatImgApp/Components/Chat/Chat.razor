@@ -1,0 +1,34 @@
+@using AIChatImgApp.Model
+@using AIChatImgApp.Services
+@inject IJSRuntime JsOp 
+@attribute [StreamRendering(true)]
+
+<div class="chat">
+
+    <div class="messages-scroller">
+        <div class="messages">
+            <ChatMessage State="initialMessage"/>
+            @for (var i = 0; i < messages.Count; i++)
+            {
+                var id = messages[i].Id.ToString();
+                var state = messages[i]!;
+                <ChatMessage @key="@id" State="@state"/>
+            }
+        </div>
+    </div>    
+
+@if (imageUploader)
+{
+    <ImageUploader Context="@imageContext" BindingValueChanged="@(ctx => OnChanged(ctx))" />
+}
+else
+{
+    <div class="write-message">
+        <textarea @bind="@userMessageText" @ref="@textArea" Placeholder="Ask the AI assistant" />
+        <div>
+            <button type="submit" @ref="@button" disabled="@string.IsNullOrWhiteSpace(userMessageText)" onclick="@(async () => await SendMessage())">Send</button>
+            <input type="checkbox" @bind="@addImage" /><span>&nbsp;&nbsp;Attach image</span>
+        </div>
+    </div>
+}
+</div>

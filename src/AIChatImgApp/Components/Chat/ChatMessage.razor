@@ -1,0 +1,44 @@
+﻿@using AIChatImgApp.Model
+
+@if (State.IsAssistant)
+{
+    <div class="message container-fluid assistant visible @(State.Streaming ? "streaming" : string.Empty)">
+        <div class="row">
+            <div class="col-2 sm-col-12 sender">
+                <div class="sender-icon">
+                    <ChatImage IsAssistant="true" />
+                    <div class="sender-name">AI Assistant</div>
+                </div>
+            </div>
+            <div class="message-content col-10 sm-col-12">
+                <div class="message-text">
+                    @(string.IsNullOrEmpty(State.TextContent) ? "..." : State.TextContent)
+                </div>
+            </div>
+        </div>        
+    </div>
+}
+else
+{
+    <div class="message container-fluid">
+        <div class="row">
+             <div class="message-content col-10 sm-col-12">
+                <div class="message-text">@State.TextContent</div>
+            </div>
+            <div class="col-2 sm-col-12 sender">
+                <div class="sender-icon">
+                    <ChatImage State="@State.Image"/>
+                    <div class="sender-name">You</div>
+                </div>
+            </div>          
+        </div>
+    </div>    
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public Message State { get; set; } = default!;
+
+    [Parameter]
+    public bool Streaming { get; set; }
+} 
